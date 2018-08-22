@@ -46,6 +46,9 @@ var myGameArea = {
     },
     clear : function() {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    },
+    getWidth : function() {
+    	return this.canvas.width;
     }
 }
 
@@ -62,7 +65,12 @@ function component(width, height, color, x, y) {
         ctx.fillRect(this.x, this.y, this.width, this.height);
     }
     this.newPos = function() {
-        this.x += this.speedX;
+    	if (this.x + this.speedX > 0 && this.x + this.speedX < myGameArea.getWidth()){
+    		this.x += this.speedX;
+    	} else {
+        	this.speedX = 0;
+        }
+        
         this.y += this.speedY;        
     }    
 }
@@ -88,7 +96,7 @@ function moveleft() {
 function moveright() {
     myGamePiece.speedX += 1; 
 }
-function clearMove() {
+function clearmove() {
     myGamePiece.speedX = 0;
     myGamePiece.speedY = 0; 
 }
