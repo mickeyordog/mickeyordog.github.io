@@ -94,11 +94,17 @@ function clearmove() {
 }
 function increasespeed() {
     myGamePiece.speed++;
+    updatescore();
+
 }
 function decreasespeed() {
 	if (myGamePiece.getSpeed() > 1){
 		myGamePiece.speed--;
+		updatescore();
 	}
+}
+function updatescore() {
+	document.getElementById('pText').innerHTML = "Speed = " + myGamePiece.speed;
 }
 </script>
 <div style="text-align:center;width:480px;">
@@ -110,4 +116,5 @@ function decreasespeed() {
   <button onclick="decreasespeed()">DECREASE SPEED</button>
 </div>
 <a href="index.html">Back to home</a>
+<p id="pText">Speed = 1</p>
 </body>
