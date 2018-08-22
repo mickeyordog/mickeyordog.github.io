@@ -65,7 +65,7 @@ function component(width, height, color, x, y) {
         ctx.fillRect(this.x, this.y, this.width, this.height);
     }
     this.newPos = function() {
-    	if (this.x + this.speedX > 0 && this.x + this.speedX < myGameArea.getWidth()){
+    	if (this.x + this.speedX > 0 && this.x + this.speedX + this.width < myGameArea.getWidth()){
     		this.x += this.speedX;
     	} else {
         	this.speedX = 0;
