@@ -79,7 +79,10 @@ function component(width, height, color, x, y) {
     		this.x += this.speedX;
     	} else {
         	this.speedX = 0;
-        }    }    
+        }
+    this.getSpeed = function() {
+    	return this.speed;
+    }
 }
 
 function updateGameArea() {
@@ -111,7 +114,9 @@ function increasespeed() {
     myGamePiece.speed++;
 }
 function decreasespeed() {
-    myGamePiece.speed--;
+	if (myGamePiece.getSpeed() > 1){
+		myGamePiece.speed--;
+	}
 }
 </script>
 <div style="text-align:center;width:480px;">
