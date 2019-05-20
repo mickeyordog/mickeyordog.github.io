@@ -44,6 +44,8 @@
       this.increase = increase;
       this.type = type; // 0 increases per second, 1 increases per click
       this.button = document.createElement("button");
+      this.p = document.createElement("p");
+      this.number = 0;
       this.purchase = function() {
         if (cookies >= this.price) {
           if (this.type == 0) {
@@ -52,7 +54,9 @@
             increaseClickRate(this.increase);
           }
           cookies -= this.price;
-          this.price = Math.floor(this.price * 1.5);
+          this.number++;
+          this.p.innerHTML = this.label + ": " + this.number;
+          this.price = Math.floor(this.price * 1.2);
           this.updateLabel();
         }
       }
@@ -65,9 +69,11 @@
     var producers = [
       new Producer("Buy Autoclick", 5, 1, 1),
       new Producer("Buy Oven", 10, 1, 0),
-      new Producer("Hire Grandma", 50, 5, 0),
-      new Producer("Build Factory", 100, 15, 0),
-      new Producer("Plant Cookie Trees", 200, 50, 0)
+      new Producer("Hire Grandma", 50, 3, 0),
+      new Producer("Build Factory", 100, 7, 0),
+      new Producer("Plant Cookie Trees", 200, 20, 0),
+      new Producer("Found Cookie Kingdom", 500, 70, 0),
+      new Producer("Create Cookie Planet", 1000, 120, 0)
     ];
 
     function startGame() {
@@ -75,10 +81,11 @@
 
      // var body = document.getElementsByTagName("body")[0];
      var body = document.getElementById("myDiv");
-
+     var body2 = document.getElementById("div2");
       producers.forEach(function(producer) {
         producer.updateLabel();
         body.appendChild(producer.button);
+        body2.appendChild(producer.p);
         producer.button.classList.add("button");
         producer.button.style.display = "none";
         producer.button.addEventListener ("click", function() {
@@ -94,7 +101,7 @@
       }*/
       cookies += cookieRate * .02;
       document.getElementById("counter").innerHTML = "Cookies: " + Math.floor(cookies);
-      if (cookies > 1000)
+      if (cookies > 10000)
         document.getElementById("winText").innerHTML = "You win! You are the cookie master!"
     
       producers.forEach(function(producer) {
@@ -128,7 +135,7 @@
     <br><button class="button" onmousedown="addCookies()" ontouchstart="addCookies(1)">Click 4 Cookie</button><br><br>
     
   </div>
-  <div style="text-align:center;width:480px;">
+  <div id="div2" style="text-align:center;width:480px;">
     <p id="counter">
       Cookies: 0
     </p>
@@ -142,7 +149,7 @@
       CPS = cookies per second, CPC = cookies per click
     </p>
     <p>
-      What will happen when you reach 1000?
+      What will happen when you reach 10,000?
     </p>
 
     <p id="winText"></p>
