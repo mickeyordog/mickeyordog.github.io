@@ -6,9 +6,26 @@
   <link href="https://fonts.googleapis.com/css?family=Open+Sans|Roboto" rel="stylesheet">
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
-    canvas {
-      border: 1px solid #d3d3d3;
-      background-color: #f1f1f1;
+    .button {
+      background-color: #4CAF50;
+      border: none;
+      color: white;
+      padding: 15px 32px;
+      text-align: center;
+      justify-content: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      margin: 4px 2px;
+      cursor: pointer;
+      border-radius: 20px;
+      border: 2px solid #555555;
+      transition-duration: 0.4s;
+      /*display: block;*/
+    }
+    .button:hover {
+      background-color: white;
+      color: black;
     }
   </style>
 </head>
@@ -18,21 +35,73 @@
     var myScore;
     var cookies = 0;
     var cookieRate = 0;
+    var clickRate = 1;
     var frameNo = 0;
+
+    function Producer(label, price, increase, type) {
+      this.label = label;
+      this.price = price;
+      this.increase = increase;
+      this.type = type; // 0 increases per second, 1 increases per click
+      this.button = document.createElement("button");
+      this.purchase = function() {
+        if (cookies >= this.price) {
+          if (this.type == 0) {
+            increaseRate(this.increase);
+          } else {
+            increaseClickRate(this.increase);
+          }
+          cookies -= this.price;
+          this.price = Math.floor(this.price * 1.5);
+          this.updateLabel();
+        }
+      }
+      this.updateLabel = function(){
+        let label2 = (this.type == 0) ? "CPS": "CPC";
+          this.button.innerHTML = this.label + " (+" + this.increase + " " + label2 + ")" + "<br>" + this.price + " Cookies";
+      }
+    }
+
+    var producers = [
+      new Producer("Buy Autoclick", 5, 1, 1),
+      new Producer("Buy Oven", 10, 1, 0),
+      new Producer("Hire Grandma", 50, 5, 0),
+      new Producer("Build Factory", 100, 15, 0),
+      new Producer("Plant Cookie Trees", 200, 50, 0)
+    ];
 
     function startGame() {
       window.setInterval(updateGame, 20);
+
+     // var body = document.getElementsByTagName("body")[0];
+     var body = document.getElementById("myDiv");
+
+      producers.forEach(function(producer) {
+        producer.updateLabel();
+        body.appendChild(producer.button);
+        producer.button.classList.add("button");
+        producer.button.style.display = "none";
+        producer.button.addEventListener ("click", function() {
+          producer.purchase()});
+      })
     }
 
     function updateGame() {
       frameNo ++;
-      if (everyinterval(10)) {
+      /*if (everyinterval(10)) {
         //50 is every second
-        addCookies(cookieRate * .2);
-      }
+        cookies += cookieRate * .2;
+      }*/
+      cookies += cookieRate * .02;
       document.getElementById("counter").innerHTML = "Cookies: " + Math.floor(cookies);
       if (cookies > 1000)
         document.getElementById("winText").innerHTML = "You win! You are the cookie master!"
+    
+      producers.forEach(function(producer) {
+        if (producer.button.style.display === "none" && cookies > producer.price) {
+          producer.button.style.display = "block";
+        }
+      })
     }
 
     function everyinterval(n) {
@@ -46,55 +115,38 @@
       cookieRate += amount;
       document.getElementById("cps").innerHTML = "Cookies/sec: " + Math.floor(cookieRate);
     }
-    function addCookies(amount) {
-      cookies += amount;
+    function increaseClickRate(amount) {
+      clickRate += amount;
+      document.getElementById("clickRate").innerHTML = "Cookies/click: " + Math.floor(clickRate);
     }
-
-    function addOven() {
-      if (cookies >= 10) {
-        increaseRate(1);
-        cookies -= 10;
-      }
+    function addCookies() {
+      cookies += clickRate;
     }
-    function addGrandma() {
-      if (cookies >= 50) {
-        increaseRate(5);
-        cookies -= 50;
-      }
-    }
-    function addFactory(){
-      if (cookies >= 100) {
-        increaseRate(15);
-        cookies -= 100;
-      }
-    }
-    function addTree(){
-      if (cookies >= 200) {
-        increaseRate(50);
-        cookies -= 200;
-      }
-    }
-    
-
 
   </script>
   <div style="text-align:center;width:480px;">
-    <button onmousedown="addCookies(1)" ontouchstart="addCookies(1)">Click 4 Cookie</button><br><br>
-    <button onmousedown="addOven()" ontouchstart="addOven()">Buy Oven (+1 CPS)<br>10 Cookies</button><br><br>
-    <button onmousedown="addGrandma()" ontouchstart="addGrandma()">Hire Grandma (+5 CPS)<br>50 Cookies</button><br><br>
-    <button onmousedown="addFactory()" ontouchstart="addFactory()">Build Factory (+15 CPS)<br>100 Cookies</button><br><br>
-    <button onmousedown="addTree()" ontouchstart="addTree()">Plant Cookie Trees (+50 CPS)<br>200 Cookies</button><br><br>
-
-  <p id="counter">
-    Cookies: 0
-  </p>
-  <p id="cps">
-    Cookies/sec: 0
-  </p>
-  <p>
-    What will happen when you reach 1000?
-  </p>
-  <p id="winText"></p>
+    <br><button class="button" onmousedown="addCookies()" ontouchstart="addCookies(1)">Click 4 Cookie</button><br><br>
+    
   </div>
+  <div style="text-align:center;width:480px;">
+    <p id="counter">
+      Cookies: 0
+    </p>
+    <p id="clickRate">
+      Cookies/click: 1
+    </p>
+    <p id="cps">
+      Cookies/sec: 0
+    </p>
+    <p>
+      CPS = cookies per second, CPC = cookies per click
+    </p>
+    <p>
+      What will happen when you reach 1000?
+    </p>
+
+    <p id="winText"></p>
+  </div>
+  <div id="myDiv" style="text-align:center;width:480px;"></div>
 </body>
 </html>
